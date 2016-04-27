@@ -14,12 +14,14 @@ University of Notre Dame, Computer Science and Engineering Department
 
 Program still in development. 
 Future plans:
+
 	Better layout of the site
 		Create actual site with server - not just local document
 	Parse date on data and plot accordingly
 	Greater automation for converting files
 	
 Necessary Files: 
+
 	plotpoints3.html
 	
 	icon.css (if you want it to look good - otherwise, very clunky looking)
