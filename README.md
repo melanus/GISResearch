@@ -18,13 +18,17 @@ Future plans:
 		Create actual site with server - not just local document
 	Parse date on data and plot accordingly
 	Greater automation for converting files
+	
+Necessary Files: 
+	plotpoints3.html
+	
+	icon.css (if you want it to look good - otherwise, very clunky looking)
+	
+	at least one geojson file
+	
 	jquery-2.1.1.min.js executable
 		Found here: https://jquery.com/download/     - also included the executable
 
-Necessary Files: 
-	plotpoints3.html
-	icon.css (if you want it to look good - otherwise, very clunky looking)
-	at least one geojson file
 
 
 INSTRUCTIONS:
