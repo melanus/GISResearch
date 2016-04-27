@@ -15,7 +15,13 @@ Future plans:
 		Create actual site with server - not just local document
 	Parse date on data and plot accordingly
 	Greater automation for converting files
+	jquery-2.1.1.min.js executable
+		Found here: https://jquery.com/download/     - also included the executable
 
+Necessary Files: 
+	plotpoints3.html
+	icon.css (if you want it to look good - otherwise, very clunky looking)
+	at least one geojson file
 
 
 INSTRUCTIONS:
@@ -233,6 +239,7 @@ function plotpoints(map, desiredkeys) {
 				markercount += 1; // Increases count to display when plotting
 			
 				// the mkr variable is created from the leaflet function
+				console.log("The latlng is " + latlng);
 				mkr = new L.Marker(latlng, {
 					    title: 'markers_'+markercount.toString(),
 					    icon: createIcon(markercount)
