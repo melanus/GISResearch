@@ -1,0 +1,298 @@
+<!--
+Program: plotpoints.html
+	Program designed to take a geojson file and plot the points on a map, be able to traverse through them, and read in the meta data from the CSV file. 
+
+Author: Matthew Lanus
+	mlanus@nd.edu
+
+Date: April, 2016
+
+University of Notre Dame, Computer Science and Engineering Department 
+
+Program still in development. 
+Future plans:
+	Better layout of the site
+		Create actual site with server - not just local document
+	Parse date on data and plot accordingly
+	Greater automation for converting files
+
+
+
+INSTRUCTIONS:
+
+	1. Make folder for contents of webpage
+
+	2. Place this program/website into folder
+
+	3a.For Excel/CSV File
+		1. Download csv of Excel file
+		2. Go to http://mapbox.github.io/csv2geojson/ and convert the csv to geojson
+		3. Copy the geojson data and save it into a file called points.geojson in the folder you have created (can be named differently, but will need to edit code nominally)
+			- If different file name, go to line 86 and 223 and replace points.geojson with correct file name
+
+	3b. For KMZ/KML files
+		1. Go to http://converter.mygeodata.eu/#top
+		2. Choose file to upload on the left and hit submit
+		3. For Target vector format, select geojson (json)
+		4. Download data and place into folder - call it points.geojson (can be named differently, but will need to edit code nominally)
+			- If different file name, go to line 86 and 223 and replace points.geojson with correct file name
+
+	4. Open the program (plotpoints.html) in the web browser of your choice 
+	
+	5. To change metadata, add in the text box on the webpage the headers of whichever columns you would like to include, serparated by commas (and no spaces). Once all the meta data that you want is listed, press submit
+	
+	6. Click each point to view the meta data
+	
+	7. To traverse through the list of points, click next and or previous
+		To return to normal view, refresh the page (check the metadata to make sure the points are in correct order - order based on way file came in)
+
+-->
+
+
+<html>
+<head>
+  <title>A Leaflet map!</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+      <link rel="stylesheet" href="icon.css" type="text/css" />
+      <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+        <script src="jquery-2.1.1.min.js"></script>
+	  <style>
+	      #map{ height: 100% }
+	    </style>
+	    </head>
+	    <body>
+
+	    <!-- creating buttons/text boxes to change display/data -->
+		<button id="toggle" >Toggle Map</button>
+		<button id="prev" >Previous</button>
+		<button id="next" >Next</button>
+		Current Metadata: <input type="text" id="metadata" value="Uhhhh" style="width:500px">
+		<button id="submit" >Submit</button>
+
+		<div id="map"></div>
+
+
+		 
+	        <script>
+
+// Marker to be used to actually plot the data points
+var mkr;
+
+
+// INITIALIZING MAP
+
+
+// jQuery call to read in the geojson file and parse it
+$.getJSON("points.geojson",function(data){
+	var features = data.features;  // storing the features of the json file
+	var firstlng = features[0].geometry.coordinates[0]; // finding the first longitude in the geojson file
+	var firstlat = features[0].geometry.coordinates[1]; // first latitude
+	var lastlng = features[features.length -1].geometry.coordinates[0]; // finding the last longitude in the geojson file
+	var lastlat = features[features.length -1].geometry.coordinates[1]; // last latitude
+	var x = (firstlat + lastlat)/2; // finding the mean between them
+	var y = (firstlng + lastlng)/2;
+	var map = L.map('map').setView([x, y], 10); // setting the map view - zoom is currently hardcoded
+
+
+
+
+
+// creates a base layer for the points to be plotted on - can be changed
+
+			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {
+				maxZoom: 18,
+					attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+						'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+							'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+						id: 'mapbox.streets'
+			}).addTo(map); 
+
+
+
+
+
+
+// USE OF BUTTONS
+
+
+	// default values for what the metadata should display in the popup
+	var desiredkeys = ['Date', 'Access Time', 'Release Time', 'Call Length*']
+
+	// gets the toggle button
+	var toggle = document.getElementById('toggle');
+	var maptype = 1;
+	toggle.onclick = function() {
+		if (maptype == 1) { // first time it is clicked, changes to Google Satellite view
+			maptype = 0;
+			L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+				maxZoom: 20,
+				subdomains:['mt0','mt1','mt2','mt3']
+			}).addTo(map);
+		}
+		else { // and every other time it switches to the normal layer
+
+			maptype = 1;
+			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {
+				maxZoom: 18,
+					attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+						'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+							'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+						id: 'mapbox.streets'
+			}).addTo(map); 
+		}
+			
+	};
+
+	// accessing the traversal buttons
+	var prev= document.getElementById('prev');
+	var next= document.getElementById('next');
+	var currentpoint = -1;
+	var traverse = 0;
+
+	prev.onclick = function() {
+		traverse = 1;
+		if (currentpoint < 0){
+			currentpoint = features.length -1;
+		}
+		else {
+			currentpoint--;
+		}
+		var lng = features[currentpoint].geometry.coordinates[0]; // finding the last longitude in the geojson file
+		var lat = features[currentpoint].geometry.coordinates[1]; // last latitude
+
+		map.setView(new L.LatLng(lat,lng), 16);
+	}
+	next.onclick = function() {
+		traverse = 1;
+		if (currentpoint == -1){ // initial point should be zero
+			currentpoint = 0;
+		}
+		else if (currentpoint == features.length){ // if it equals the end of the list, then go back to the beginning
+			currentpoint = 0;
+		}
+		else { // otherwise change the current point to next point
+			currentpoint++;
+		}
+		var lng = features[currentpoint].geometry.coordinates[0]; // finding the last longitude in the geojson file
+		var lat = features[currentpoint].geometry.coordinates[1]; // last latitude
+		map.setView(new L.LatLng(lat,lng), 16);
+	}
+	// change the metadata once the submit button is pressed
+	var submit= document.getElementById('submit');
+	submit.onclick = function() {
+		var fields = document.getElementById("metadata").value; //the value ofmetadata is what is in the next box
+		desiredkeys = fields.split(","); // the metadata should be seperated by commas - this command seperates the text box into an array
+		map.removeLayer(mkr); // remove the current data points
+		plotpoints(map,desiredkeys); // and plots the points again
+	}
+
+	
+// PLOTS THE POINTS FROM GEOJSON FILE	
+
+	plotpoints(map, desiredkeys);
+
+
+});
+
+
+
+
+
+
+
+
+// Creates the icon for the points - stylized with CSS
+function createIcon( numb ){
+  return L.divIcon({
+    iconSize: [30, 30], // set size to 30px x 30px
+    html: '<b>'+numb.toString()+'</b>',
+    className: 'leaflet-div-icon '
+  });
+}
+
+
+
+
+
+
+
+
+function plotpoints(map, desiredkeys) {
+
+	// jQuery call to read and parse geojson
+	$.getJSON("points.geojson",function(data){
+
+
+		// initializing variables to use later
+		var markercount = 0;
+		var markers = [];
+		// Leaflet call to plot the points
+		L.geoJson(data, {
+			pointToLayer: function (feature, latlng) { //latlng and feature are taken from geojson file
+
+				markercount += 1; // Increases count to display when plotting
+			
+				// the mkr variable is created from the leaflet function
+				mkr = new L.Marker(latlng, {
+					    title: 'markers_'+markercount.toString(),
+					    icon: createIcon(markercount)
+					    });
+				mkr.myCustomID = markercount;
+
+				// creates an array of mkrs
+				markers.push(mkr);
+		
+
+
+				// information for popups
+
+				var copied = jQuery.extend({}, feature.properties); //copied is a copy of the properties the geojson file has - used so you don't have to alter actual file
+				document.getElementById("metadata").value = desiredkeys; // changing the text box to reflect the metadata that is to be provided via popup
+				for (var key in copied){
+					if (copied.hasOwnProperty(key)){
+						if (desiredkeys.indexOf(key) == -1) {
+							delete copied[key];
+						}
+					}
+				}
+
+				popupdata = JSON.stringify(copied, null, 2); // makes it pretty print - same information, just displayed with new lines
+				return mkr.bindPopup(popupdata);
+			}
+		})
+		.addTo(map); // displaying the points with circles and popups
+
+
+	});
+
+}
+
+
+
+// styling the circles
+var myStyle = {
+	"color": "#ff7800",
+	"weight": 5,
+	"opacity": 0.65
+};
+
+
+
+
+
+  </script>
+  </body>
+  </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
