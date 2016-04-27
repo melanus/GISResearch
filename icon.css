@@ -1,0 +1,23 @@
+.leaflet-div-icon {
+    border-radius: 50%;
+    border: none;
+    line-height: 30px;
+    font-family: verdana;
+    text-align: center;
+    color: white;
+    opacity: .8;
+    vertical-align: middle;
+    background: #ff7800;
+}
+
+
+
+#metadata {
+position: relative;
+top: -1px;
+left: 350px;
+}
+
+#submit {
+position: relative;
+left: 360px

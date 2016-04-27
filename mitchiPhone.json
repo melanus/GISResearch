@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+                                                                                
+"features": [
+{ "type": "Feature", "properties": { "Name": "Calendar location", "description": "<b>Summary:<\/b>&nbsp;Calendar location<br>", "timestamp": null, "begin": null, "end": null, "altitudeMode": null, "tessellate": -1, "extrude": -1, "visibility": -1, "drawOrder": null, "icon": null }, "geometry": { "type": "Point", "coordinates": [ -86.111834, 41.753671 ] } },
+{ "type": "Feature", "properties": { "Name": "Calendar location", "description": "<b>Summary:<\/b>&nbsp;Calendar location<br>", "timestamp": null, "begin": null, "end": null, "altitudeMode": null, "tessellate": -1, "extrude": -1, "visibility": -1, "drawOrder": null, "icon": null }, "geometry": { "type": "Point", "coordinates": [ -86.189597, 41.693818 ] } },
+{ "type": "Feature", "properties": { "Name": "Calendar location", "description": "<b>Summary:<\/b>&nbsp;Calendar location<br>", "timestamp": null, "begin": null, "end": null, "altitudeMode": null, "tessellate": -1, "extrude": -1, "visibility": -1, "drawOrder": null, "icon": null }, "geometry": { "type": "Point", "coordinates": [ -86.048435, 41.782469 ] } },
+{ "type": "Feature", "properties": { "Name": "Calendar location", "description": "<b>Summary:<\/b>&nbsp;Calendar location<br>", "timestamp": null, "begin": null, "end": null, "altitudeMode": null, "tessellate": -1, "extrude": -1, "visibility": -1, "drawOrder": null, "icon": null }, "geometry": { "type": "Point", "coordinates": [ -87.619534, 41.889176 ] } },
+{ "type": "Feature", "properties": { "Name": "Calendar location", "description": "<b>Summary:<\/b>&nbsp;Calendar location<br>", "timestamp": null, "begin": null, "end": null, "altitudeMode": null, "tessellate": -1, "extrude": -1, "visibility": -1, "drawOrder": null, "icon": null }, "geometry": { "type": "Point", "coordinates": [ -85.540268, 44.746558 ] } }
+]
+}
